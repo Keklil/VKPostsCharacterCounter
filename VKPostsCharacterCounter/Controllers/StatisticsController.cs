@@ -1,32 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using VKPostsCharacterCounter.Services;
-using VKPostsCharacterCounter.Abstract;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VkNet;
-using VkNet.Model;
-using VkNet.Abstractions;
-using VkNet.Enums.Filters;
-using VkNet.Model.RequestParams;
 
 namespace VKPostsCharacterCounter.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/char-statistics")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class StatisticsController : ControllerBase
     {
-        private readonly ILogger<ValuesController> _logger;
+        private readonly ILogger<StatisticsController> _logger;
         private PostsService _searcher;
 
-        public ValuesController(ILogger<ValuesController> logger, PostsService searcher)
+        public StatisticsController(ILogger<StatisticsController> logger, PostsService searcher)
         {
             _logger = logger;
             _searcher = searcher;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetCharStatistic()
         {
             try
             {
@@ -35,7 +28,7 @@ namespace VKPostsCharacterCounter.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside GetEventInfo action: {ex.Message}");
+                _logger.LogError($"Something wrong inside GetCharStatistic action: {ex.Message}");
                 return StatusCode(500, new { message = "Internal server error" });
             }
         }
