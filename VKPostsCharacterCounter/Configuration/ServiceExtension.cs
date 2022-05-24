@@ -22,7 +22,7 @@ namespace VKPostsCharacterCounter.Configuration
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Vk posts statistics",
+                    Title = "Vk post statistics",
                     Description = "API to get statistics on the number of letters in the first five posts on a personal Vk page."
                 });            
                 

@@ -30,8 +30,8 @@ namespace VKPostsCharacterCounter.Services
                 var itemConvert = new String(item.Where(x => Char.IsLetter(x)).ToArray()).ToLower();
                 for (int i = 0; i < itemConvert.Length; i++)
                 {
-                    bool flag = charStat.ContainsKey(itemConvert[i]);
-                    if (flag == true)
+                    bool charInDictionary = charStat.ContainsKey(itemConvert[i]);
+                    if (charInDictionary == true)
                     {
                         int countOfChar = charStat[itemConvert[i]];
                         charStat[itemConvert[i]] = ++countOfChar;
