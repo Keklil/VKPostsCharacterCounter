@@ -18,6 +18,10 @@ namespace VKPostsCharacterCounter.Controllers
             _searcher = searcher;
         }
 
+        /// <summary>
+        /// Gets statistics on the number of characters on the user's personal page.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetCharStatistic()
         {
