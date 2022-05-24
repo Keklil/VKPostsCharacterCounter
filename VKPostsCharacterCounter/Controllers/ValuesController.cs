@@ -1,5 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using VKPostsCharacterCounter.Services;
+using VKPostsCharacterCounter.Abstract;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VkNet;
+using VkNet.Model;
+using VkNet.Abstractions;
+using VkNet.Enums.Filters;
+using VkNet.Model.RequestParams;
 
 namespace VKPostsCharacterCounter.Controllers
 {
@@ -8,10 +17,12 @@ namespace VKPostsCharacterCounter.Controllers
     public class ValuesController : ControllerBase
     {
         private readonly ILogger<ValuesController> _logger;
+        private PostsService _searcher;
 
-        public ValuesController(ILogger<ValuesController> logger)
+        public ValuesController(ILogger<ValuesController> logger, PostsService searcher)
         {
             _logger = logger;
+            _searcher = searcher;
         }
 
         [HttpGet]
@@ -19,7 +30,8 @@ namespace VKPostsCharacterCounter.Controllers
         {
             try
             {
-                return Ok();
+                var list = await _searcher.Search();
+                return Ok(list);
             }
             catch (Exception ex)
             {

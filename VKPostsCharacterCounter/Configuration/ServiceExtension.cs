@@ -1,5 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using VkNet;
+using Microsoft.EntityFrameworkCore;
 using VKPostsCharacterCounter.Services;
+using VkNet.Model;
+using VkNet.Abstractions;
+using Microsoft.Extensions.Configuration;
 
 namespace VKPostsCharacterCounter.Configuration
 {
@@ -10,9 +14,18 @@ namespace VKPostsCharacterCounter.Configuration
             //services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(config.GetConnectionString("DefaultConnection")));
         }
 
-        public static void ConfigureVkApi(this IServiceCollection services)
+        public static void AddVkApi(this IServiceCollection services, IConfiguration config)
         {
-            services.AddScoped<AuthVkSupporter>();
+            services.AddSingleton<IVkApi>(x => {
+                var api = new VkApi();
+                api.Authorize(new ApiAuthParams { AccessToken = config["Vk:AccessToken"] });
+                return api;
+            });
+        }
+
+        public static void AddPostsService(this IServiceCollection services)
+        {
+            services.AddScoped<PostsService>();
         }
     }
 }
