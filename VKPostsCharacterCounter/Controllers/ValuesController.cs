@@ -30,7 +30,7 @@ namespace VKPostsCharacterCounter.Controllers
         {
             try
             {
-                var list = await _searcher.CharCounter();
+                var list = await _searcher.CharCount();
                 return Ok(list);
             }
             catch (Exception ex)

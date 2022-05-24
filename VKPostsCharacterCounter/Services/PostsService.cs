@@ -1,20 +1,19 @@
 ﻿using VkNet;
 using VkNet.Abstractions;
 using VkNet.Model;
-using VkNet.Enums.Filters;
 using VkNet.Model.RequestParams;
-using VKPostsCharacterCounter.Abstract;
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace VKPostsCharacterCounter.Services
 {
     public class PostsService
     {
-        private IVkApi _api { get; set; }
-        public PostsService(IVkApi api)
+        private IVkApi _api;
+        private ApplicationContext _context;
+        public PostsService(IVkApi api, ApplicationContext context)
         {
             _api = api;
+            _context = context;
         }
 
         public async Task<List<string>> Search()
@@ -26,38 +25,52 @@ namespace VKPostsCharacterCounter.Services
                 Filter = VkNet.Enums.SafetyEnums.WallFilter.Owner
             });
 
-            var list = new List<string>();
+            var listOfPosts = new List<string>();
             foreach (var post in wallGetObject.WallPosts)
             {
-                list.Add(post.Text);
+                listOfPosts.Add(post.Text);
             }
-            return list;
+            return listOfPosts;
         }
 
-        public async Task<Dictionary<char, int>> CharCounter()
+        public async Task<Dictionary<char, int>> CharCount()
         {
-            var output = new Dictionary<char, int>();
-            var list = await Search();
+            var charStat = new Dictionary<char, int>();
+            var listOfPosts = await Search();
 
-            foreach (var item in list)
+            foreach (var item in listOfPosts)
             {
                 var itemConvert = new String(item.Where(x => Char.IsLetter(x)).ToArray()).ToLower();
                 for (int i = 0; i < itemConvert.Length; i++)
                 {
-                    bool flag = output.ContainsKey(itemConvert[i]);
-                    if (flag)
+                    bool flag = charStat.ContainsKey(itemConvert[i]);
+                    if (flag == true)
                     {
-                        int count = output[itemConvert[i]];
-                        output[itemConvert[i]] = ++count;
+                        int countOfChar = charStat[itemConvert[i]];
+                        charStat[itemConvert[i]] = ++countOfChar;
                     }
                     else
                     {
-                        output[itemConvert[i]] = 1;
+                        charStat[itemConvert[i]] = 1;
                     }
                 }
             }
+            await SaveToDb(charStat);
 
-            return output;
+            return charStat;
+        }
+
+        public async Task SaveToDb(Dictionary<char, int> charStat)
+        {
+
+            CharStat charStatDTO = new CharStat()
+            {
+                Id = Guid.NewGuid(),
+                Date = DateTime.UtcNow,
+                Data = JsonConvert.SerializeObject(charStat)
+            };
+            await _context.Set<CharStat>().AddAsync(charStatDTO);
+            await _context.SaveChangesAsync();
         }
     }
 }

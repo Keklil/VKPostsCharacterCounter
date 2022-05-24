@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddVkApi(builder.Configuration);
+builder.Services.ConfigurePostgreSqlContext(builder.Configuration);
 builder.Services.AddPostsService();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

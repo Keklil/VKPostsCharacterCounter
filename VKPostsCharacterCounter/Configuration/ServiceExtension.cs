@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using VKPostsCharacterCounter.Services;
 using VkNet.Model;
 using VkNet.Abstractions;
-using Microsoft.Extensions.Configuration;
 
 namespace VKPostsCharacterCounter.Configuration
 {
@@ -11,7 +10,7 @@ namespace VKPostsCharacterCounter.Configuration
     {
         public static void ConfigurePostgreSqlContext(this IServiceCollection services, IConfiguration config)
         {
-            //services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(config.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(config.GetConnectionString("DefaultConnection")));
         }
 
         public static void AddVkApi(this IServiceCollection services, IConfiguration config)
